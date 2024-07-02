@@ -1,0 +1,30 @@
+services:
+  bridge:
+    build: .
+    networks:
+      - default
+
+  prometheus:
+    image: prom/prometheus
+    networks:
+      - default
+    volumes:
+      - './prometheus.yml:/etc/prometheus/prometheus.yml:ro'
+      - './prometheus-data:/prometheus'
+    depends_on:
+      - bridge
+
+  grafana:
+    image: grafana/grafana-oss
+    networks:
+      - default
+    ports:
+      - "9772:3000"
+    volumes:
+      - './grafana:/var/lib/grafana'
+    depends_on:
+      - bridge
+      - prometheus
+
+networks:
+  default:

@@ -1,0 +1,476 @@
+{
+	"__inputs": [
+		{
+			"name": "DS_PROMETHEUS",
+			"label": "Prometheus",
+			"description": "",
+			"type": "datasource",
+			"pluginId": "prometheus",
+			"pluginName": "Prometheus"
+		}
+	],
+	"__requires": [
+		{
+			"type": "grafana",
+			"id": "grafana",
+			"name": "Grafana",
+			"version": "5.0.0"
+		},
+		{
+			"type": "datasource",
+			"id": "prometheus",
+			"name": "Prometheus",
+			"version": "1.0.0"
+		},
+		{
+			"type": "panel",
+			"id": "timeseries",
+			"name": "Time series",
+			"version": ""
+		}
+	],
+	"annotations": {
+		"list": [
+			{
+				"$$hashKey": "object:1058",
+				"builtIn": 1,
+				"datasource": {
+					"type": "datasource",
+					"uid": "grafana"
+				},
+				"enable": true,
+				"hide": true,
+				"iconColor": "rgba(0, 211, 255, 1)",
+				"name": "Annotations & Alerts",
+				"target": {
+					"limit": 100,
+					"matchAny": false,
+					"tags": [],
+					"type": "dashboard"
+				},
+				"type": "dashboard"
+			}
+		]
+	},
+	"editable": true,
+	"fiscalYearStartMonth": 0,
+	"graphTooltip": 0,
+	"id": null,
+	"links": [],
+	"panels": [
+		{
+			"datasource": {
+				"type": "prometheus",
+				"uid": "prometheus"
+			},
+			"fieldConfig": {
+				"defaults": {
+					"color": {
+						"mode": "continuous-RdYlGr",
+						"seriesBy": "last"
+					},
+					"custom": {
+						"axisBorderShow": true,
+						"axisCenteredZero": false,
+						"axisColorMode": "text",
+						"axisLabel": "",
+						"axisPlacement": "auto",
+						"barAlignment": 0,
+						"drawStyle": "line",
+						"fillOpacity": 40,
+						"gradientMode": "scheme",
+						"hideFrom": {
+							"legend": false,
+							"tooltip": false,
+							"viz": false
+						},
+						"insertNulls": false,
+						"lineInterpolation": "smooth",
+						"lineStyle": {
+							"fill": "solid"
+						},
+						"lineWidth": 3,
+						"pointSize": 5,
+						"scaleDistribution": {
+							"type": "linear"
+						},
+						"showPoints": "never",
+						"spanNulls": true,
+						"stacking": {
+							"group": "A",
+							"mode": "none"
+						},
+						"thresholdsStyle": {
+							"mode": "off"
+						}
+					},
+					"fieldMinMax": true,
+					"mappings": [],
+					"min": 0,
+					"thresholds": {
+						"mode": "absolute",
+						"steps": [
+							{
+								"color": "red",
+								"value": null
+							}
+						]
+					},
+					"unit": "velocitykmh"
+				},
+				"overrides": []
+			},
+			"gridPos": {
+				"h": 17,
+				"w": 19,
+				"x": 0,
+				"y": 0
+			},
+			"id": 1,
+			"options": {
+				"legend": {
+					"calcs": [
+						"max",
+						"mean"
+					],
+					"displayMode": "list",
+					"placement": "bottom",
+					"showLegend": false
+				},
+				"tooltip": {
+					"hoverProximity": 500,
+					"maxHeight": 2,
+					"mode": "single",
+					"sort": "none"
+				}
+			},
+			"targets": [
+				{
+					"datasource": {
+						"type": "prometheus",
+						"uid": "prometheus"
+					},
+					"editorMode": "code",
+					"expr": "train_speed",
+					"instant": false,
+					"legendFormat": "Speed (km/h)",
+					"range": true,
+					"refId": "A"
+				}
+			],
+			"title": "Speed History",
+			"type": "timeseries"
+		},
+		{
+			"datasource": {
+				"type": "prometheus",
+				"uid": "prometheus"
+			},
+			"description": "",
+			"fieldConfig": {
+				"defaults": {
+					"color": {
+						"mode": "fixed"
+					},
+					"fieldMinMax": true,
+					"mappings": [],
+					"thresholds": {
+						"mode": "absolute",
+						"steps": [
+							{
+								"color": "green",
+								"value": null
+							}
+						]
+					},
+					"unit": "string"
+				},
+				"overrides": []
+			},
+			"gridPos": {
+				"h": 2,
+				"w": 5,
+				"x": 19,
+				"y": 0
+			},
+			"id": 5,
+			"options": {
+				"colorMode": "value",
+				"graphMode": "area",
+				"justifyMode": "auto",
+				"orientation": "auto",
+				"reduceOptions": {
+					"calcs": [
+						"last"
+					],
+					"fields": "",
+					"values": false
+				},
+				"showPercentChange": false,
+				"text": {},
+				"textMode": "name",
+				"wideLayout": true
+			},
+			"pluginVersion": "10.4.3",
+			"targets": [
+				{
+					"datasource": {
+						"type": "prometheus",
+						"uid": "prometheus"
+					},
+					"editorMode": "code",
+					"exemplar": false,
+					"expr": "train_trip",
+					"format": "time_series",
+					"instant": true,
+					"legendFormat": "{{train}}",
+					"range": false,
+					"refId": "A"
+				}
+			],
+			"type": "stat"
+		},
+		{
+			"datasource": {
+				"type": "prometheus",
+				"uid": "prometheus"
+			},
+			"fieldConfig": {
+				"defaults": {
+					"color": {
+						"mode": "continuous-RdYlGr",
+						"seriesBy": "last"
+					},
+					"decimals": 1,
+					"fieldMinMax": true,
+					"mappings": [],
+					"noValue": "0",
+					"thresholds": {
+						"mode": "absolute",
+						"steps": [
+							{
+								"color": "red",
+								"value": null
+							}
+						]
+					},
+					"unit": "velocitykmh"
+				},
+				"overrides": []
+			},
+			"gridPos": {
+				"h": 7,
+				"w": 5,
+				"x": 19,
+				"y": 2
+			},
+			"id": 2,
+			"options": {
+				"minVizHeight": 92,
+				"minVizWidth": 75,
+				"orientation": "auto",
+				"reduceOptions": {
+					"calcs": [
+						"lastNotNull"
+					],
+					"fields": "",
+					"limit": 1,
+					"values": false
+				},
+				"showThresholdLabels": false,
+				"showThresholdMarkers": true,
+				"sizing": "auto",
+				"text": {}
+			},
+			"pluginVersion": "10.4.3",
+			"targets": [
+				{
+					"datasource": {
+						"type": "prometheus",
+						"uid": "prometheus"
+					},
+					"editorMode": "code",
+					"expr": "train_speed",
+					"instant": false,
+					"legendFormat": "__auto",
+					"range": true,
+					"refId": "A"
+				}
+			],
+			"title": "Current Speed",
+			"type": "gauge"
+		},
+		{
+			"datasource": {
+				"type": "prometheus",
+				"uid": "prometheus"
+			},
+			"description": "",
+			"fieldConfig": {
+				"defaults": {
+					"color": {
+						"mode": "thresholds"
+					},
+					"decimals": 0,
+					"fieldMinMax": true,
+					"mappings": [],
+					"noValue": "0",
+					"thresholds": {
+						"mode": "absolute",
+						"steps": [
+							{
+								"color": "green",
+								"value": null
+							},
+							{
+								"color": "yellow",
+								"value": 5
+							},
+							{
+								"color": "orange",
+								"value": 10
+							},
+							{
+								"color": "red",
+								"value": 20
+							},
+							{
+								"color": "dark-red",
+								"value": 30
+							}
+						]
+					},
+					"unit": "m"
+				},
+				"overrides": []
+			},
+			"gridPos": {
+				"h": 3,
+				"w": 5,
+				"x": 19,
+				"y": 9
+			},
+			"id": 3,
+			"options": {
+				"colorMode": "value",
+				"graphMode": "area",
+				"justifyMode": "auto",
+				"orientation": "auto",
+				"reduceOptions": {
+					"calcs": [
+						"last"
+					],
+					"fields": "",
+					"values": false
+				},
+				"showPercentChange": false,
+				"text": {},
+				"textMode": "auto",
+				"wideLayout": true
+			},
+			"pluginVersion": "10.4.3",
+			"targets": [
+				{
+					"datasource": {
+						"type": "prometheus",
+						"uid": "prometheus"
+					},
+					"editorMode": "code",
+					"exemplar": false,
+					"expr": "train_trip",
+					"instant": true,
+					"legendFormat": "__auto",
+					"range": false,
+					"refId": "A"
+				}
+			],
+			"title": "Delay",
+			"type": "stat"
+		},
+		{
+			"datasource": {
+				"type": "prometheus",
+				"uid": "prometheus"
+			},
+			"description": "",
+			"fieldConfig": {
+				"defaults": {
+					"color": {
+						"mode": "fixed"
+					},
+					"fieldMinMax": true,
+					"mappings": [],
+					"thresholds": {
+						"mode": "absolute",
+						"steps": [
+							{
+								"color": "green",
+								"value": null
+							}
+						]
+					},
+					"unit": "string"
+				},
+				"overrides": []
+			},
+			"gridPos": {
+				"h": 5,
+				"w": 5,
+				"x": 19,
+				"y": 12
+			},
+			"id": 4,
+			"options": {
+				"colorMode": "value",
+				"graphMode": "area",
+				"justifyMode": "auto",
+				"orientation": "auto",
+				"reduceOptions": {
+					"calcs": [
+						"last"
+					],
+					"fields": "",
+					"values": false
+				},
+				"showPercentChange": false,
+				"text": {},
+				"textMode": "name",
+				"wideLayout": true
+			},
+			"pluginVersion": "10.4.3",
+			"targets": [
+				{
+					"datasource": {
+						"type": "prometheus",
+						"uid": "prometheus"
+					},
+					"editorMode": "code",
+					"exemplar": false,
+					"expr": "train_trip",
+					"instant": true,
+					"legendFormat": "{{next_station}}",
+					"range": false,
+					"refId": "A"
+				}
+			],
+			"title": "Next Station",
+			"type": "stat"
+		}
+	],
+	"refresh": "5s",
+	"schemaVersion": 39,
+	"tags": [],
+	"templating": {
+		"list": []
+	},
+	"time": {
+		"from": "now-2h",
+		"to": "now"
+	},
+	"timepicker": {},
+	"timezone": "browser",
+	"title": "Train data",
+	"uid": "trainData",
+	"version": 1,
+	"weekStart": ""
+}

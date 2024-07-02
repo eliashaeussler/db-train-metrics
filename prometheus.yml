@@ -1,0 +1,6 @@
+scrape_configs:
+  - job_name: 'train'
+    scrape_interval: 5s
+    scheme: http
+    static_configs:
+      - targets: ['bridge:8080']

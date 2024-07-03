@@ -1,4 +1,4 @@
-editorconfig-checker==2.7.3
-prometheus_client==0.20.0
-pylint==3.2.5
-requests==2.32.2
+editorconfig-checker >= 2.7.3, < 3.0
+prometheus_client >= 0.20.0, < 0.21
+pylint >= 3.2.5, < 4.0
+requests >= 2.32.2, < 3.0

@@ -1,14 +1,22 @@
 #!/usr/bin/env python
 
+"""
+Collect DB train metrics and export them as Prometheus data.
+"""
+
 import json
 import logging
 import sys
 import time
+from urllib.request import urlopen
 from prometheus_client import start_http_server
 from prometheus_client.core import GaugeMetricFamily, REGISTRY
-from urllib.request import urlopen
 
-class DbTrainMetricsCollector(object):
+class DbTrainMetricsCollector():
+    """
+    Collect and export DB train metrics.
+    """
+
     STATUS_URL="https://iceportal.de/api1/rs/status"
     TRIP_URL="https://iceportal.de/api1/rs/tripInfo/trip"
 
@@ -16,22 +24,30 @@ class DbTrainMetricsCollector(object):
         self.logger = logger
 
     def collect(self):
+        """
+        Collect DB train metrics from DB Onboard API.
+        """
+
         speed_metric = GaugeMetricFamily('train_speed', 'Speed in km/h of the current train')
-        trip_metric = GaugeMetricFamily('train_trip', 'Delay in minutes of the current trip', labels=['train', 'next_station'])
+        trip_metric = GaugeMetricFamily(
+            'train_trip',
+            'Delay in minutes of the current trip',
+            labels=['train', 'next_station']
+        )
 
         # Collect speed and delay information
-        speed = self.__collect_speed()
-        train, next_station, delay = self.__collect_trip()
+        speed = self.collect_speed()
+        train, next_station, delay = self.collect_trip()
 
         # Handle speed metric
-        if speed != None:
+        if speed is not None:
             speed_metric.add_metric([], speed)
             self.logger.debug('Extracted train speed from JSON response: %.2f', speed)
         else:
             speed_metric.add_metric([], 0.0)
 
         # Handle trip metric
-        if train != None and next_station != None and delay != None:
+        if train is not None and next_station is not None and delay is not None:
             trip_metric.add_metric([train, next_station], delay)
             self.logger.debug('Extracted train from JSON response: %s', train)
             self.logger.debug('Extracted next station from JSON response: %s', next_station)
@@ -42,18 +58,28 @@ class DbTrainMetricsCollector(object):
         yield speed_metric
         yield trip_metric
 
-    def __collect_speed(self):
+    def collect_speed(self):
+        """
+        Collect speed metrics from DB onboard status API.
+        """
+
         try:
-            status_response = json.load(urlopen(self.STATUS_URL))
+            with urlopen(self.STATUS_URL) as res:
+                status_response = json.load(res)
         except json.decoder.JSONDecodeError as error:
             self.logger.error('Error while decoding JSON from %s: %s', self.STATUS_URL, str(error))
             return None
 
         return status_response.get('speed', 0.0)
 
-    def __collect_trip(self):
+    def collect_trip(self):
+        """
+        Collect trip metrics from DB onboard trip API.
+        """
+
         try:
-            trip_response = json.load(urlopen(self.TRIP_URL))
+            with urlopen(self.TRIP_URL) as res:
+                trip_response = json.load(res)
         except json.decoder.JSONDecodeError as error:
             self.logger.error('Error while decoding JSON from %s: %s', self.TRIP_URL, str(error))
             return None, None, None
@@ -67,7 +93,7 @@ class DbTrainMetricsCollector(object):
         self.logger.debug('Extracted next station from JSON response: %s', next_station)
 
         # Early return if next station is not defined
-        if next_station == None:
+        if next_station is None:
             return train, None, None
 
         for stop in all_stops:
@@ -87,6 +113,10 @@ class DbTrainMetricsCollector(object):
         return train, None, None
 
 def main():
+    """
+    Run metrics exporter.
+    """
+
     try:
         handler = logging.StreamHandler(sys.stdout)
         logger = logging.getLogger()
@@ -96,14 +126,14 @@ def main():
         REGISTRY.register(DbTrainMetricsCollector(logger))
 
         logger.debug('Starting server at http://localhost:8080...')
-        server, t = start_http_server(8080)
+        start_http_server(8080)
 
         # Collect metrics every 3 seconds
         while True:
             time.sleep(3)
     except KeyboardInterrupt:
         logger.debug('Received keyboard interrupt, exiting.')
-        exit(0)
+        sys.exit(0)
 
 if __name__ == '__main__':
     main()

@@ -1,0 +1,32 @@
+name: CGL
+on:
+  push:
+    branches:
+      - main
+      - 'renovate/**'
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  cgl:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # Prepare environment
+      - name: Setup Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: 3
+          cache: 'pip'
+
+      # Install dependencies
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      # Linting
+      - name: Lint Python files
+        run: pylint *.py

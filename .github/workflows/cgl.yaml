@@ -28,5 +28,7 @@ jobs:
         run: pip install -r requirements.txt
 
       # Linting
+      - name: Lint Editorconfig
+        run: ec -verbose
       - name: Lint Python files
         run: pylint *.py

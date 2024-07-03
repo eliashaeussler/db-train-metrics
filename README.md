@@ -9,7 +9,7 @@ and displays information about the current train and next station.
 ## Requirements
 
 > [!NOTE]
-> You must be connected to a `WIFIOnICE` network in order for this
+> You must be connected to a `WIFIonICE` network in order for this
 > repository to work since it fetches all relevant information from
 > DB Onboard APIs.
 
@@ -23,11 +23,11 @@ and displays information about the current train and next station.
 3. Open Grafana at <http://localhost:9772> in your browser
 4. Login with default credentials (`admin`/`admin`)
 5. Add a new [Prometheus data source](https://grafana.com/docs/grafana/latest/datasources/prometheus/configure-prometheus-data-source/)
-   * Prometheus server URL: `http://prometheus:9090`
+    * Prometheus server URL: `http://prometheus:9090`
 6. Add a new [dashboard](https://grafana.com/docs/grafana/latest/dashboards/build-dashboards/import-dashboards/)
-   * Select _New_ > _Import_
-   * Paste the contents from [grafana-dashboard.json](grafana-dashboard.json)
-   * Select the Prometheus data source
+    * Select _New_ > _Import_
+    * Paste the contents from [grafana-dashboard.json](grafana-dashboard.json)
+    * Select the Prometheus data source
 
 ## Stack
 

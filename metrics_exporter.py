@@ -8,6 +8,7 @@ import json
 import logging
 import sys
 import time
+import urllib
 from urllib.request import urlopen
 from prometheus_client import start_http_server
 from prometheus_client.core import GaugeMetricFamily, REGISTRY
@@ -17,8 +18,8 @@ class DbTrainMetricsCollector():
     Collect and export DB train metrics.
     """
 
-    STATUS_URL="https://iceportal.de/api1/rs/status"
-    TRIP_URL="https://iceportal.de/api1/rs/tripInfo/trip"
+    STATUS_URL = "https://iceportal.de/api1/rs/status"
+    TRIP_URL = "https://iceportal.de/api1/rs/tripInfo/trip"
 
     def __init__(self, logger):
         self.logger = logger
@@ -64,8 +65,11 @@ class DbTrainMetricsCollector():
         """
 
         try:
-            with urlopen(self.STATUS_URL) as res:
+            with urlopen(self.STATUS_URL, timeout=20) as res:
                 status_response = json.load(res)
+        except urllib.error.URLError as error:
+            self.logger.error('Error while fetching JSON from %s: %s', self.STATUS_URL, str(error))
+            return None
         except json.decoder.JSONDecodeError as error:
             self.logger.error('Error while decoding JSON from %s: %s', self.STATUS_URL, str(error))
             return None
@@ -78,8 +82,11 @@ class DbTrainMetricsCollector():
         """
 
         try:
-            with urlopen(self.TRIP_URL) as res:
+            with urlopen(self.TRIP_URL, timeout=20) as res:
                 trip_response = json.load(res)
+        except urllib.error.URLError as error:
+            self.logger.error('Error while fetching JSON from %s: %s', self.TRIP_URL, str(error))
+            return None, None, None
         except json.decoder.JSONDecodeError as error:
             self.logger.error('Error while decoding JSON from %s: %s', self.TRIP_URL, str(error))
             return None, None, None

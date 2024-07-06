@@ -135,9 +135,9 @@ def main():
         logger.debug('Starting server at http://localhost:8080...')
         start_http_server(8080)
 
-        # Collect metrics every 3 seconds
+        # Collect metrics every 10 seconds
         while True:
-            time.sleep(3)
+            time.sleep(10)
     except KeyboardInterrupt:
         logger.debug('Received keyboard interrupt, exiting.')
         sys.exit(0)

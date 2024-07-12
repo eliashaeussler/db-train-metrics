@@ -241,7 +241,7 @@
 						"mode": "continuous-RdYlGr",
 						"seriesBy": "last"
 					},
-					"decimals": 1,
+					"decimals": 0,
 					"fieldMinMax": true,
 					"mappings": [],
 					"noValue": "0",

@@ -34,6 +34,20 @@ and displays information about the current train and next station.
     * Paste the contents from [grafana-dashboard.json](grafana-dashboard.json)
     * Select the Prometheus data source
 
+## Troubleshooting
+
+If your dashboard doesn't receive any data make sure that you are
+really connected to the ICE Wifi and that you can access
+[iceportal.de](https://iceportal.de) in  your browser.
+
+You can also check for connection problems by running
+`docker compose logs -f bridge`. The logs should show failed requests
+to fetch JSON from https://iceportal.de/api1/rs/status
+and https://iceportal.de/api1/rs/tripInfo/trip.
+
+Unfortunately, the connection to the DB Onboard API is not very stable
+and may not always work.
+
 ## Stack
 
 * [Prometheus](https://prometheus.io/) as data source

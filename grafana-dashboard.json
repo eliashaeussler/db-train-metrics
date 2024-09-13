@@ -244,6 +244,7 @@
 					"decimals": 0,
 					"fieldMinMax": true,
 					"mappings": [],
+					"min": 0,
 					"noValue": "0",
 					"thresholds": {
 						"mode": "absolute",

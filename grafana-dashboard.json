@@ -127,6 +127,7 @@
 				"y": 0
 			},
 			"id": 1,
+			"interval": "5s",
 			"options": {
 				"legend": {
 					"calcs": [
@@ -266,6 +267,7 @@
 				"y": 2
 			},
 			"id": 2,
+			"interval": "5s",
 			"options": {
 				"minVizHeight": 92,
 				"minVizWidth": 75,
@@ -352,6 +354,7 @@
 				"y": 7
 			},
 			"id": 3,
+			"interval": "30s",
 			"options": {
 				"colorMode": "value",
 				"graphMode": "area",
@@ -421,6 +424,7 @@
 				"y": 10
 			},
 			"id": 4,
+			"interval": "30s",
 			"options": {
 				"colorMode": "value",
 				"graphMode": "area",
@@ -492,6 +496,7 @@
 				"y": 14
 			},
 			"id": 6,
+			"interval": "5s",
 			"options": {
 				"colorMode": "value",
 				"graphMode": "area",

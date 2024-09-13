@@ -112,6 +112,8 @@ class DbTrainMetricsCollector():
             # Remove leading plus (+) character from delay information
             if isinstance(delay, str) and delay.startswith('+'):
                 delay = int(delay.lstrip('+'))
+            else:
+                delay = 0
 
             # Return delay data if eva number matches with next station
             if eva_nr == next_station:

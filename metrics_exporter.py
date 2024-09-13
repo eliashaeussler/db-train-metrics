@@ -10,6 +10,7 @@ import sys
 import time
 import urllib
 from urllib.request import urlopen
+from geopy.distance import geodesic
 from prometheus_client import start_http_server
 from prometheus_client.core import GaugeMetricFamily, REGISTRY
 
@@ -35,10 +36,14 @@ class DbTrainMetricsCollector():
             'Delay in minutes of the current trip',
             labels=['train', 'next_station']
         )
+        distance_metric = GaugeMetricFamily(
+            'train_distance',
+            'Distance in km until next station of the current trip'
+        )
 
         # Collect speed and delay information
-        speed = self.collect_speed()
-        train, next_station, delay = self.collect_trip()
+        speed, current_location = self.collect_status()
+        train, next_station, delay, next_station_location = self.collect_trip()
 
         # Handle speed metric
         if speed is not None:
@@ -56,12 +61,26 @@ class DbTrainMetricsCollector():
         else:
             trip_metric.add_metric(['Unknown', 'Unknown'], 0)
 
+        # Handle distance metric
+        if current_location is not None and next_station_location is not None:
+            distance = self.calculate_distance(current_location, next_station_location)
+            distance_metric.add_metric([], distance)
+            self.logger.debug('Extracted current location from JSON response: %s', current_location)
+            self.logger.debug(
+                'Extracted next station location from JSON response: %s',
+                next_station_location
+            )
+            self.logger.debug('Calculated distance: %.2f', distance)
+        else:
+            distance_metric.add_metric([], 0)
+
         yield speed_metric
         yield trip_metric
+        yield distance_metric
 
-    def collect_speed(self):
+    def collect_status(self):
         """
-        Collect speed metrics from DB onboard status API.
+        Collect status metrics from DB onboard status API.
         """
 
         try:
@@ -69,14 +88,23 @@ class DbTrainMetricsCollector():
                 status_response = json.load(res)
         except urllib.error.URLError as error:
             self.logger.error('Error while fetching JSON from %s: %s', self.STATUS_URL, str(error))
-            return None
+            return None, None
         except json.decoder.JSONDecodeError as error:
             self.logger.error('Error while decoding JSON from %s: %s', self.STATUS_URL, str(error))
-            return None
+            return None, None
 
-        return status_response.get('speed', 0.0)
+        speed = status_response.get('speed', 0.0)
+        latitude = status_response.get('latitude')
+        longitude = status_response.get('longitude')
 
-    def collect_trip(self):
+        if latitude is None or longitude is None:
+            coordinates = None
+        else:
+            coordinates = (latitude, longitude)
+
+        return speed, coordinates
+
+    def collect_trip(self): # pylint: disable=too-many-locals
         """
         Collect trip metrics from DB onboard trip API.
         """
@@ -86,10 +114,10 @@ class DbTrainMetricsCollector():
                 trip_response = json.load(res)
         except urllib.error.URLError as error:
             self.logger.error('Error while fetching JSON from %s: %s', self.TRIP_URL, str(error))
-            return None, None, None
+            return None, None, None, None
         except json.decoder.JSONDecodeError as error:
             self.logger.error('Error while decoding JSON from %s: %s', self.TRIP_URL, str(error))
-            return None, None, None
+            return None, None, None, None
 
         # Fetch train, next station and all stops
         trip = trip_response.get('trip', {})
@@ -101,13 +129,24 @@ class DbTrainMetricsCollector():
 
         # Early return if next station is not defined
         if next_station is None:
-            return train, None, None
+            return train, None, None, None
 
         for stop in all_stops:
             station = stop.get('station', {})
             eva_nr = station.get('evaNr')
             station_name = station.get('name', '')
             delay = stop.get('timetable', {}).get('arrivalDelay', 0)
+
+            # Get coordinates
+            coordinates = station.get('geocoordinates', {})
+            latitude = coordinates.get('latitude')
+            longitude = coordinates.get('longitude')
+
+            # Handle coordinates
+            if latitude is not None and longitude is not None:
+                location = (latitude, longitude)
+            else:
+                location = None
 
             # Remove leading plus (+) character from delay information
             if isinstance(delay, str) and delay.startswith('+'):
@@ -117,9 +156,16 @@ class DbTrainMetricsCollector():
 
             # Return delay data if eva number matches with next station
             if eva_nr == next_station:
-                return train, station_name, delay
+                return train, station_name, delay, location
 
-        return train, None, None
+        return train, None, None, None
+
+    def calculate_distance(self, coordinates_from, coordinates_to):
+        """
+        Calculate distance in kilometers between two coordinates.
+        """
+
+        return geodesic(coordinates_from, coordinates_to).km
 
 def main():
     """

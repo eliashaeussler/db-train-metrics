@@ -25,7 +25,7 @@ jobs:
 
       # Install dependencies
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: pip install -r requirements.txt -r requirements-dev.txt
 
       # Linting
       - name: Lint Editorconfig

@@ -1,2 +1,2 @@
-editorconfig-checker >=3.1.2, <3.2
+editorconfig-checker >=3.2, <3.3
 pylint >= 3.2.5, < 4.0

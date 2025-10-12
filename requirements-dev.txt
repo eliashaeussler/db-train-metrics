@@ -1,2 +1,2 @@
 editorconfig-checker >=3.4, <3.5
-pylint >= 3.2.5, < 4.0
+pylint >=4, <4.1

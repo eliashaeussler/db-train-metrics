@@ -40,9 +40,14 @@ class DbTrainMetricsCollector():
             'train_distance',
             'Distance in km until next station of the current trip'
         )
+        internet_metric = GaugeMetricFamily(
+            'train_internet',
+            'Current internet connectivity',
+            labels=['connectivity']
+        )
 
         # Collect speed and delay information
-        speed, current_location = self.collect_status()
+        speed, current_location, internet = self.collect_status()
         train, next_station, delay, next_station_location = self.collect_trip()
 
         # Handle speed metric
@@ -74,9 +79,31 @@ class DbTrainMetricsCollector():
         else:
             distance_metric.add_metric([], 0)
 
+        # Handle internet metric
+        if isinstance(internet, str):
+            internet_connectivity_map = {
+                'NO_INFO': -1,
+                'NO_INTERNET': 0,
+                'OFFLINE': 0,
+                'UNSTABLE': 1,
+                'WEAK': 2,
+                'MIDDLE': 3,
+                'HIGH': 4,
+            }
+            internet_connectivity = internet_connectivity_map.get(internet, -1)
+            internet_metric.add_metric([internet], internet_connectivity)
+            self.logger.debug(
+                'Extracted internet connectivity from JSON response: %s (%d)',
+                internet,
+                internet_connectivity
+            )
+        else:
+            internet_metric.add_metric(['NO_INFO'], -1)
+
         yield speed_metric
         yield trip_metric
         yield distance_metric
+        yield internet_metric
 
     def collect_status(self):
         """
@@ -88,21 +115,25 @@ class DbTrainMetricsCollector():
                 status_response = json.load(res)
         except urllib.error.URLError as error:
             self.logger.error('Error while fetching JSON from %s: %s', self.STATUS_URL, str(error))
-            return None, None
+            return None, None, None
         except json.decoder.JSONDecodeError as error:
             self.logger.error('Error while decoding JSON from %s: %s', self.STATUS_URL, str(error))
-            return None, None
+            return None, None, None
 
         speed = status_response.get('speed', 0.0)
         latitude = status_response.get('latitude')
         longitude = status_response.get('longitude')
+        internet = (
+            status_response.get('connectivity', {}).get('currentState')
+            or status_response.get('internet')
+        )
 
         if latitude is None or longitude is None:
             coordinates = None
         else:
             coordinates = (latitude, longitude)
 
-        return speed, coordinates
+        return speed, coordinates, internet
 
     def collect_trip(self): # pylint: disable=too-many-locals
         """

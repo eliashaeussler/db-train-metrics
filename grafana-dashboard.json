@@ -14,7 +14,7 @@
 			"type": "grafana",
 			"id": "grafana",
 			"name": "Grafana",
-			"version": "5.0.0"
+			"version": "12.3.0"
 		},
 		{
 			"type": "datasource",
@@ -76,6 +76,7 @@
 						"axisLabel": "",
 						"axisPlacement": "auto",
 						"barAlignment": 0,
+						"barWidthFactor": 0.6,
 						"drawStyle": "line",
 						"fillOpacity": 40,
 						"gradientMode": "scheme",
@@ -95,6 +96,7 @@
 							"type": "linear"
 						},
 						"showPoints": "never",
+						"showValues": false,
 						"spanNulls": true,
 						"stacking": {
 							"group": "A",
@@ -112,13 +114,139 @@
 						"steps": [
 							{
 								"color": "red",
-								"value": null
+								"value": 0
 							}
 						]
 					},
 					"unit": "velocitykmh"
 				},
-				"overrides": []
+				"overrides": [
+					{
+						"matcher": {
+							"id": "byName",
+							"options": "train_internet"
+						},
+						"properties": [
+							{
+								"id": "mappings",
+								"value": [
+									{
+										"options": {
+											"0": {
+												"color": "red",
+												"index": 1,
+												"text": "Offline"
+											},
+											"1": {
+												"color": "orange",
+												"index": 2,
+												"text": "Unstable"
+											},
+											"2": {
+												"color": "yellow",
+												"index": 3,
+												"text": "Weak"
+											},
+											"3": {
+												"color": "super-light-green",
+												"index": 4,
+												"text": "Medium"
+											},
+											"4": {
+												"color": "green",
+												"index": 5,
+												"text": "High"
+											},
+											"-1": {
+												"color": "transparent",
+												"index": 0,
+												"text": "Unknown"
+											}
+										},
+										"type": "value"
+									}
+								]
+							},
+							{
+								"id": "unit",
+								"value": "none"
+							},
+							{
+								"id": "max"
+							},
+							{
+								"id": "custom.axisPlacement",
+								"value": "hidden"
+							},
+							{
+								"id": "custom.fillOpacity",
+								"value": 20
+							},
+							{
+								"id": "custom.drawStyle",
+								"value": "line"
+							},
+							{
+								"id": "custom.lineWidth",
+								"value": 0
+							},
+							{
+								"id": "custom.spanNulls",
+								"value": false
+							},
+							{
+								"id": "color",
+								"value": {
+									"mode": "thresholds",
+									"seriesBy": "max"
+								}
+							},
+							{
+								"id": "custom.gradientMode",
+								"value": "none"
+							},
+							{
+								"id": "thresholds",
+								"value": {
+									"mode": "absolute",
+									"steps": [
+										{
+											"color": "transparent",
+											"value": 0
+										},
+										{
+											"color": "red",
+											"value": 0
+										},
+										{
+											"color": "orange",
+											"value": 1
+										},
+										{
+											"color": "#EAB839",
+											"value": 2
+										},
+										{
+											"color": "super-light-green",
+											"value": 3
+										},
+										{
+											"color": "semi-dark-green",
+											"value": 4
+										}
+									]
+								}
+							},
+							{
+								"id": "custom.stacking",
+								"value": {
+									"group": "A",
+									"mode": "percent"
+								}
+							}
+						]
+					}
+				]
 			},
 			"gridPos": {
 				"h": 17,
@@ -139,12 +267,14 @@
 					"showLegend": false
 				},
 				"tooltip": {
+					"hideZeros": false,
 					"hoverProximity": 500,
 					"maxHeight": 2,
 					"mode": "single",
 					"sort": "none"
 				}
 			},
+			"pluginVersion": "12.3.1",
 			"targets": [
 				{
 					"datasource": {
@@ -157,6 +287,21 @@
 					"legendFormat": "Speed (km/h)",
 					"range": true,
 					"refId": "A"
+				},
+				{
+					"datasource": {
+						"type": "prometheus",
+						"uid": "prometheus"
+					},
+					"editorMode": "builder",
+					"exemplar": false,
+					"expr": "train_internet",
+					"format": "time_series",
+					"hide": false,
+					"instant": false,
+					"legendFormat": "Internet connectivity",
+					"range": true,
+					"refId": "B"
 				}
 			],
 			"title": "Speed History",
@@ -171,6 +316,7 @@
 			"fieldConfig": {
 				"defaults": {
 					"color": {
+						"fixedColor": "text",
 						"mode": "fixed"
 					},
 					"fieldMinMax": true,
@@ -180,7 +326,7 @@
 						"steps": [
 							{
 								"color": "green",
-								"value": null
+								"value": 0
 							}
 						]
 					},
@@ -200,6 +346,7 @@
 				"graphMode": "area",
 				"justifyMode": "auto",
 				"orientation": "auto",
+				"percentChangeColorMode": "standard",
 				"reduceOptions": {
 					"calcs": [
 						"last"
@@ -212,7 +359,7 @@
 				"textMode": "name",
 				"wideLayout": true
 			},
-			"pluginVersion": "10.4.3",
+			"pluginVersion": "12.3.1",
 			"targets": [
 				{
 					"datasource": {
@@ -229,6 +376,7 @@
 					"refId": "A"
 				}
 			],
+			"title": "",
 			"type": "stat"
 		},
 		{
@@ -245,14 +393,13 @@
 					"decimals": 0,
 					"fieldMinMax": true,
 					"mappings": [],
-					"min": 0,
 					"noValue": "0",
 					"thresholds": {
 						"mode": "absolute",
 						"steps": [
 							{
 								"color": "red",
-								"value": null
+								"value": 0
 							}
 						]
 					},
@@ -261,7 +408,7 @@
 				"overrides": []
 			},
 			"gridPos": {
-				"h": 5,
+				"h": 6,
 				"w": 5,
 				"x": 19,
 				"y": 2
@@ -285,7 +432,7 @@
 				"sizing": "auto",
 				"text": {}
 			},
-			"pluginVersion": "10.4.3",
+			"pluginVersion": "12.3.1",
 			"targets": [
 				{
 					"datasource": {
@@ -295,6 +442,7 @@
 					"editorMode": "code",
 					"expr": "train_speed",
 					"instant": false,
+					"interval": "0",
 					"legendFormat": "__auto",
 					"range": true,
 					"refId": "A"
@@ -323,7 +471,7 @@
 						"steps": [
 							{
 								"color": "green",
-								"value": null
+								"value": 0
 							},
 							{
 								"color": "yellow",
@@ -349,17 +497,17 @@
 			},
 			"gridPos": {
 				"h": 3,
-				"w": 5,
+				"w": 2,
 				"x": 19,
-				"y": 7
+				"y": 8
 			},
 			"id": 3,
-			"interval": "30s",
 			"options": {
-				"colorMode": "value",
+				"colorMode": "background",
 				"graphMode": "area",
 				"justifyMode": "auto",
 				"orientation": "auto",
+				"percentChangeColorMode": "standard",
 				"reduceOptions": {
 					"calcs": [
 						"last"
@@ -372,7 +520,7 @@
 				"textMode": "auto",
 				"wideLayout": true
 			},
-			"pluginVersion": "10.4.3",
+			"pluginVersion": "12.3.1",
 			"targets": [
 				{
 					"datasource": {
@@ -400,6 +548,118 @@
 			"fieldConfig": {
 				"defaults": {
 					"color": {
+						"fixedColor": "red",
+						"mode": "thresholds"
+					},
+					"decimals": 0,
+					"fieldMinMax": true,
+					"mappings": [
+						{
+							"options": {
+								"-1": {
+									"color": "transparent",
+									"index": 0,
+									"text": "Unknown"
+								},
+								"0": {
+									"color": "red",
+									"index": 1,
+									"text": "No internet"
+								},
+								"1": {
+									"color": "orange",
+									"index": 2,
+									"text": "Unstable"
+								},
+								"2": {
+									"color": "yellow",
+									"index": 3,
+									"text": "Weak"
+								},
+								"3": {
+									"color": "super-light-green",
+									"index": 4,
+									"text": "Medium"
+								},
+								"4": {
+									"color": "semi-dark-green",
+									"index": 5,
+									"text": "High"
+								}
+							},
+							"type": "value"
+						}
+					],
+					"max": 4,
+					"min": 0,
+					"noValue": "Unknown",
+					"thresholds": {
+						"mode": "absolute",
+						"steps": [
+							{
+								"color": "super-light-red",
+								"value": 0
+							}
+						]
+					},
+					"unit": "string"
+				},
+				"overrides": []
+			},
+			"gridPos": {
+				"h": 3,
+				"w": 3,
+				"x": 21,
+				"y": 8
+			},
+			"id": 7,
+			"options": {
+				"colorMode": "background",
+				"graphMode": "area",
+				"justifyMode": "auto",
+				"orientation": "auto",
+				"percentChangeColorMode": "same_as_value",
+				"reduceOptions": {
+					"calcs": [
+						"last"
+					],
+					"fields": "",
+					"values": false
+				},
+				"showPercentChange": false,
+				"text": {},
+				"textMode": "value",
+				"wideLayout": true
+			},
+			"pluginVersion": "12.3.1",
+			"targets": [
+				{
+					"datasource": {
+						"type": "prometheus",
+						"uid": "prometheus"
+					},
+					"editorMode": "code",
+					"exemplar": false,
+					"expr": "train_internet",
+					"instant": true,
+					"legendFormat": "{{connectivity}}",
+					"range": false,
+					"refId": "A"
+				}
+			],
+			"title": "Internet connectivity",
+			"type": "stat"
+		},
+		{
+			"datasource": {
+				"type": "prometheus",
+				"uid": "prometheus"
+			},
+			"description": "",
+			"fieldConfig": {
+				"defaults": {
+					"color": {
+						"fixedColor": "text",
 						"mode": "fixed"
 					},
 					"fieldMinMax": true,
@@ -409,7 +669,7 @@
 						"steps": [
 							{
 								"color": "green",
-								"value": null
+								"value": 0
 							}
 						]
 					},
@@ -418,18 +678,18 @@
 				"overrides": []
 			},
 			"gridPos": {
-				"h": 4,
+				"h": 3,
 				"w": 5,
 				"x": 19,
-				"y": 10
+				"y": 11
 			},
 			"id": 4,
-			"interval": "30s",
 			"options": {
 				"colorMode": "value",
 				"graphMode": "area",
 				"justifyMode": "auto",
 				"orientation": "auto",
+				"percentChangeColorMode": "standard",
 				"reduceOptions": {
 					"calcs": [
 						"last"
@@ -442,7 +702,7 @@
 				"textMode": "name",
 				"wideLayout": true
 			},
-			"pluginVersion": "10.4.3",
+			"pluginVersion": "12.3.1",
 			"targets": [
 				{
 					"datasource": {
@@ -470,6 +730,7 @@
 			"fieldConfig": {
 				"defaults": {
 					"color": {
+						"fixedColor": "text",
 						"mode": "fixed"
 					},
 					"decimals": 2,
@@ -481,7 +742,23 @@
 						"steps": [
 							{
 								"color": "green",
-								"value": null
+								"value": 0
+							},
+							{
+								"color": "yellow",
+								"value": 10
+							},
+							{
+								"color": "orange",
+								"value": 20
+							},
+							{
+								"color": "red",
+								"value": 50
+							},
+							{
+								"color": "dark-red",
+								"value": 100
 							}
 						]
 					},
@@ -496,12 +773,12 @@
 				"y": 14
 			},
 			"id": 6,
-			"interval": "5s",
 			"options": {
 				"colorMode": "value",
 				"graphMode": "area",
 				"justifyMode": "auto",
 				"orientation": "auto",
+				"percentChangeColorMode": "standard",
 				"reduceOptions": {
 					"calcs": [
 						"last"
@@ -514,7 +791,7 @@
 				"textMode": "auto",
 				"wideLayout": true
 			},
-			"pluginVersion": "10.4.3",
+			"pluginVersion": "12.3.1",
 			"targets": [
 				{
 					"datasource": {
@@ -534,8 +811,9 @@
 			"type": "stat"
 		}
 	],
+	"preload": false,
 	"refresh": "5s",
-	"schemaVersion": 39,
+	"schemaVersion": 42,
 	"tags": [],
 	"templating": {
 		"list": []
@@ -548,6 +826,5 @@
 	"timezone": "browser",
 	"title": "Train data",
 	"uid": "trainData",
-	"version": 1,
-	"weekStart": ""
+	"version": 1
 }

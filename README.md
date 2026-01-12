@@ -21,7 +21,7 @@ and displays information about the current train and next station.
 > [!TIP]
 > Since bandwidth on trains is limited, it is recommended to pull all
 > necessary Docker images prior to boarding the train. Just clone the
-> repository and run `docker compose build && docker compose pull`.
+> repository and run `docker compose build --pull`.
 
 1. Clone the repository
 2. Run `docker compose up -d`

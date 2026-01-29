@@ -1,3 +1,2 @@
 /.venv
-/grafana
-/prometheus-data
+/data

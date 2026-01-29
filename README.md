@@ -45,6 +45,7 @@ Flags:
 -d, --debug     Display more information when running this script
 -f, --follow    Keep containers running as long as the script runs
 -h, --help      Show this help
+-l, --logs      Follow container logs once containers are running
 -o, --open      Open the Grafana dashboard in your browser
 -p, --prune     Prune existing Docker volumes to reset persisted data
 -v, --version   Print the current version of this script

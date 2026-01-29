@@ -26,13 +26,6 @@ and displays information about the current train and next station.
 1. Clone the repository
 2. Run `docker compose up -d`
 3. Open Grafana at <http://localhost:9772> in your browser
-4. Login with default credentials (`admin`/`admin`)
-5. Add a new [Prometheus data source](https://grafana.com/docs/grafana/latest/datasources/prometheus/configure/)
-    * Prometheus server URL: `http://prometheus:9090`
-6. Add a new [dashboard](https://grafana.com/docs/grafana/latest/visualizations/dashboards/build-dashboards/import-dashboards/)
-    * Select _New_ > _Import_
-    * Paste the contents from [grafana-dashboard.json](grafana-dashboard.json)
-    * Select the Prometheus data source
 
 ## Troubleshooting
 

@@ -15,6 +15,7 @@ readonly prometheusUrl="http://localhost:9773"
 build=0
 debug=0
 follow=0
+logs=0
 open=0
 prune=0
 
@@ -49,6 +50,7 @@ function _usage() {
     echo -e "  ${GREEN}-d, --debug${NC}     Display more information when running this script"
     echo -e "  ${GREEN}-f, --follow${NC}    Keep containers running as long as the script runs"
     echo -e "  ${GREEN}-h, --help${NC}      Show this help"
+    echo -e "  ${GREEN}-l, --logs${NC}      Follow container logs once containers are running"
     echo -e "  ${GREEN}-o, --open${NC}      Open the Grafana dashboard in your browser"
     echo -e "  ${GREEN}-p, --prune${NC}     Prune existing Docker volumes to reset persisted data"
     echo -e "  ${GREEN}-v, --version${NC}   Print the current version of this script"
@@ -102,6 +104,10 @@ while [ $# -gt 0 ]; do
     -h|--help)
         _usage
         exit 0
+        ;;
+    -l|--logs)
+        logs=1
+        shift
         ;;
     -o|--open)
         open=1
@@ -266,11 +272,19 @@ function finalize() {
     if [ "$follow" -eq 1 ]; then
         trap cleanup_and_exit INT TERM
         echo -e "${GRAY}Follow mode enabled. Press Ctrl+C to stop containers and exit.${NC}"
-        tail -f /dev/null
+
+        if [ "$logs" -eq 0 ]; then
+            tail -f /dev/null
+        fi
     else
         echo -e "${GREEN}All Docker containers are running.${NC}"
         echo -e "Run ${CYAN}./stop.sh${NC} to stop containers."
         echo -e "${GRAY}You can also run this script with ${YELLOW}--follow${GRAY} to keep containers open while the script is running.${NC}"
+    fi
+
+    if [ "$logs" -eq 1 ]; then
+        echo
+        docker compose logs -f
     fi
 }
 

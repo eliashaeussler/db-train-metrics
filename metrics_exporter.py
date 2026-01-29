@@ -6,8 +6,9 @@ Collect DB train metrics and export them as Prometheus data.
 
 import json
 import logging
+import signal
 import sys
-import time
+import threading
 import urllib
 from urllib.request import urlopen
 from geopy.distance import geodesic
@@ -208,20 +209,32 @@ def main():
     Run metrics exporter.
     """
 
+    logger = logging.getLogger()
+    stop_event = threading.Event()
+
+    def _handle_shutdown(signum, frame):  # pylint: disable=unused-argument
+        logger.debug('Received signal %s, shutting down...', signum)
+        stop_event.set()
+
     try:
         handler = logging.StreamHandler(sys.stdout)
-        logger = logging.getLogger()
         logger.addHandler(handler)
         logger.setLevel(logging.DEBUG)
+
+        signal.signal(signal.SIGTERM, _handle_shutdown)
+        signal.signal(signal.SIGINT, _handle_shutdown)
 
         REGISTRY.register(DbTrainMetricsCollector(logger))
 
         logger.debug('Starting server at http://localhost:8080...')
         start_http_server(8080)
 
-        # Collect metrics every 10 seconds
-        while True:
-            time.sleep(10)
+        # Wait until shutdown signal is received (interruptible sleep)
+        while not stop_event.is_set():
+            stop_event.wait(10)
+
+        logger.debug('Shutdown complete.')
+        sys.exit(0)
     except KeyboardInterrupt:
         logger.debug('Received keyboard interrupt, exiting.')
         sys.exit(0)

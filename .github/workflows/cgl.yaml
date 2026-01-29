@@ -28,3 +28,5 @@ jobs:
         run: ec -verbose
       - name: Lint Python files
         run: pylint *.py
+      - name: Lint shell files
+        run: bash -c 'shopt -s globstar nullglob; shellcheck *.sh'

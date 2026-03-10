@@ -26,7 +26,7 @@ class DbTrainMetricsCollector():
     def __init__(self, logger):
         self.logger = logger
 
-    def collect(self):
+    def collect(self): # pylint: disable=too-many-locals
         """
         Collect DB train metrics from DB Onboard API.
         """
@@ -49,7 +49,7 @@ class DbTrainMetricsCollector():
 
         # Collect speed and delay information
         speed, current_location, internet = self.collect_status()
-        train, next_station, delay, next_station_location = self.collect_trip()
+        train, next_station, final_station, delay, next_station_location = self.collect_trip()
 
         # Handle speed metric
         if speed is not None:
@@ -59,9 +59,15 @@ class DbTrainMetricsCollector():
             speed_metric.add_metric([], 0.0)
 
         # Handle trip metric
-        if train is not None and next_station is not None and delay is not None:
-            trip_metric.add_metric([train, next_station], delay)
+        if (
+            train is not None
+            and next_station is not None
+            and final_station is not None
+            and delay is not None
+        ):
+            trip_metric.add_metric([train + " → " + final_station, next_station], delay)
             self.logger.debug('Extracted train from JSON response: %s', train)
+            self.logger.debug('Extracted final station from JSON response: %s', final_station)
             self.logger.debug('Extracted next station from JSON response: %s', next_station)
             self.logger.debug('Extracted delay from JSON response: %d', delay)
         else:
@@ -146,10 +152,10 @@ class DbTrainMetricsCollector():
                 trip_response = json.load(res)
         except urllib.error.URLError as error:
             self.logger.error('Error while fetching JSON from %s: %s', self.TRIP_URL, str(error))
-            return None, None, None, None
+            return None, None, None, None, None
         except json.decoder.JSONDecodeError as error:
             self.logger.error('Error while decoding JSON from %s: %s', self.TRIP_URL, str(error))
-            return None, None, None, None
+            return None, None, None, None, None
 
         # Fetch train, next station and all stops
         trip = trip_response.get('trip', {})
@@ -160,13 +166,14 @@ class DbTrainMetricsCollector():
         stop_info = trip.get('stopInfo', {})
         stop_info = stop_info if isinstance(stop_info, dict) else {}
         next_station = stop_info.get('actualNext')
+        final_station = stop_info.get('finalStationName')
         all_stops = trip.get('stops', [])
 
         self.logger.debug('Extracted next station from JSON response: %s', next_station)
 
         # Early return if next station is not defined
         if next_station is None:
-            return train, None, None, None
+            return train, None, None, None, None
 
         for stop in all_stops:
             station = stop.get('station', {})
@@ -193,9 +200,9 @@ class DbTrainMetricsCollector():
 
             # Return delay data if eva number matches with next station
             if eva_nr == next_station:
-                return train, station_name, delay, location
+                return train, station_name, final_station, delay, location
 
-        return train, None, None, None
+        return train, None, final_station, None, None
 
     def calculate_distance(self, coordinates_from, coordinates_to):
         """

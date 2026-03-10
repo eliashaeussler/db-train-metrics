@@ -110,137 +110,11 @@
 					},
 					"unit": "velocitykmh"
 				},
-				"overrides": [
-					{
-						"matcher": {
-							"id": "byName",
-							"options": "train_internet"
-						},
-						"properties": [
-							{
-								"id": "mappings",
-								"value": [
-									{
-										"options": {
-											"0": {
-												"color": "red",
-												"index": 1,
-												"text": "Offline"
-											},
-											"1": {
-												"color": "orange",
-												"index": 2,
-												"text": "Unstable"
-											},
-											"2": {
-												"color": "yellow",
-												"index": 3,
-												"text": "Weak"
-											},
-											"3": {
-												"color": "super-light-green",
-												"index": 4,
-												"text": "Medium"
-											},
-											"4": {
-												"color": "green",
-												"index": 5,
-												"text": "High"
-											},
-											"-1": {
-												"color": "transparent",
-												"index": 0,
-												"text": "Unknown"
-											}
-										},
-										"type": "value"
-									}
-								]
-							},
-							{
-								"id": "unit",
-								"value": "none"
-							},
-							{
-								"id": "max"
-							},
-							{
-								"id": "custom.axisPlacement",
-								"value": "hidden"
-							},
-							{
-								"id": "custom.fillOpacity",
-								"value": 20
-							},
-							{
-								"id": "custom.drawStyle",
-								"value": "line"
-							},
-							{
-								"id": "custom.lineWidth",
-								"value": 0
-							},
-							{
-								"id": "custom.spanNulls",
-								"value": false
-							},
-							{
-								"id": "color",
-								"value": {
-									"mode": "thresholds",
-									"seriesBy": "max"
-								}
-							},
-							{
-								"id": "custom.gradientMode",
-								"value": "none"
-							},
-							{
-								"id": "thresholds",
-								"value": {
-									"mode": "absolute",
-									"steps": [
-										{
-											"color": "transparent",
-											"value": 0
-										},
-										{
-											"color": "red",
-											"value": 0
-										},
-										{
-											"color": "orange",
-											"value": 1
-										},
-										{
-											"color": "#EAB839",
-											"value": 2
-										},
-										{
-											"color": "super-light-green",
-											"value": 3
-										},
-										{
-											"color": "semi-dark-green",
-											"value": 4
-										}
-									]
-								}
-							},
-							{
-								"id": "custom.stacking",
-								"value": {
-									"group": "A",
-									"mode": "percent"
-								}
-							}
-						]
-					}
-				]
+				"overrides": []
 			},
 			"gridPos": {
-				"h": 17,
-				"w": 19,
+				"h": 16,
+				"w": 16,
 				"x": 0,
 				"y": 0
 			},
@@ -264,7 +138,7 @@
 					"sort": "none"
 				}
 			},
-			"pluginVersion": "12.3.1",
+			"pluginVersion": "12.3.2",
 			"targets": [
 				{
 					"datasource": {
@@ -272,26 +146,11 @@
 						"uid": "${DS_PROMETHEUS}"
 					},
 					"editorMode": "code",
-					"expr": "train_speed",
+					"expr": "avg_over_time(train_speed[30s])",
 					"instant": false,
 					"legendFormat": "Speed (km/h)",
 					"range": true,
 					"refId": "A"
-				},
-				{
-					"datasource": {
-						"type": "prometheus",
-						"uid": "${DS_PROMETHEUS}"
-					},
-					"editorMode": "builder",
-					"exemplar": false,
-					"expr": "train_internet",
-					"format": "time_series",
-					"hide": false,
-					"instant": false,
-					"legendFormat": "Internet connectivity",
-					"range": true,
-					"refId": "B"
 				}
 			],
 			"title": "Speed History",
@@ -325,9 +184,9 @@
 				"overrides": []
 			},
 			"gridPos": {
-				"h": 2,
-				"w": 5,
-				"x": 19,
+				"h": 3,
+				"w": 8,
+				"x": 16,
 				"y": 0
 			},
 			"id": 5,
@@ -349,7 +208,7 @@
 				"textMode": "name",
 				"wideLayout": true
 			},
-			"pluginVersion": "12.3.1",
+			"pluginVersion": "12.3.2",
 			"targets": [
 				{
 					"datasource": {
@@ -399,9 +258,9 @@
 			},
 			"gridPos": {
 				"h": 6,
-				"w": 5,
-				"x": 19,
-				"y": 2
+				"w": 8,
+				"x": 16,
+				"y": 3
 			},
 			"id": 2,
 			"interval": "5s",
@@ -422,7 +281,7 @@
 				"sizing": "auto",
 				"text": {}
 			},
-			"pluginVersion": "12.3.1",
+			"pluginVersion": "12.3.2",
 			"targets": [
 				{
 					"datasource": {
@@ -486,10 +345,10 @@
 				"overrides": []
 			},
 			"gridPos": {
-				"h": 3,
-				"w": 2,
-				"x": 19,
-				"y": 8
+				"h": 4,
+				"w": 4,
+				"x": 16,
+				"y": 9
 			},
 			"id": 3,
 			"options": {
@@ -510,7 +369,7 @@
 				"textMode": "auto",
 				"wideLayout": true
 			},
-			"pluginVersion": "12.3.1",
+			"pluginVersion": "12.3.2",
 			"targets": [
 				{
 					"datasource": {
@@ -519,10 +378,11 @@
 					},
 					"editorMode": "code",
 					"exemplar": false,
-					"expr": "train_trip",
-					"instant": true,
+					"expr": "sum(train_trip) by ()",
+					"instant": false,
+					"interval": "0",
 					"legendFormat": "__auto",
-					"range": false,
+					"range": true,
 					"refId": "A"
 				}
 			],
@@ -597,10 +457,10 @@
 				"overrides": []
 			},
 			"gridPos": {
-				"h": 3,
-				"w": 3,
-				"x": 21,
-				"y": 8
+				"h": 4,
+				"w": 4,
+				"x": 20,
+				"y": 9
 			},
 			"id": 7,
 			"options": {
@@ -621,7 +481,7 @@
 				"textMode": "value",
 				"wideLayout": true
 			},
-			"pluginVersion": "12.3.1",
+			"pluginVersion": "12.3.2",
 			"targets": [
 				{
 					"datasource": {
@@ -630,10 +490,11 @@
 					},
 					"editorMode": "code",
 					"exemplar": false,
-					"expr": "train_internet",
-					"instant": true,
+					"expr": "sum(train_internet) by ()",
+					"format": "time_series",
+					"instant": false,
 					"legendFormat": "{{connectivity}}",
-					"range": false,
+					"range": true,
 					"refId": "A"
 				}
 			],
@@ -670,8 +531,8 @@
 			"gridPos": {
 				"h": 3,
 				"w": 5,
-				"x": 19,
-				"y": 11
+				"x": 16,
+				"y": 13
 			},
 			"id": 4,
 			"options": {
@@ -692,7 +553,7 @@
 				"textMode": "name",
 				"wideLayout": true
 			},
-			"pluginVersion": "12.3.1",
+			"pluginVersion": "12.3.2",
 			"targets": [
 				{
 					"datasource": {
@@ -726,6 +587,7 @@
 					"decimals": 2,
 					"fieldMinMax": true,
 					"mappings": [],
+					"min": 0,
 					"noValue": "0",
 					"thresholds": {
 						"mode": "absolute",
@@ -758,9 +620,9 @@
 			},
 			"gridPos": {
 				"h": 3,
-				"w": 5,
-				"x": 19,
-				"y": 14
+				"w": 3,
+				"x": 21,
+				"y": 13
 			},
 			"id": 6,
 			"options": {
@@ -781,7 +643,7 @@
 				"textMode": "auto",
 				"wideLayout": true
 			},
-			"pluginVersion": "12.3.1",
+			"pluginVersion": "12.3.2",
 			"targets": [
 				{
 					"datasource": {

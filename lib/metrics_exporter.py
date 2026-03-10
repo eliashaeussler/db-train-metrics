@@ -157,7 +157,7 @@ class DbTrainMetricsCollector():
             part for part in (trip.get('trainType'), trip.get('vzn'))
             if part is not None
         ).strip() or None
-        stop_info = trip_response.get('stopInfo', {})
+        stop_info = trip.get('stopInfo', {})
         stop_info = stop_info if isinstance(stop_info, dict) else {}
         next_station = stop_info.get('actualNext')
         all_stops = trip.get('stops', [])

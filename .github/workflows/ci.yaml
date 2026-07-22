@@ -45,7 +45,7 @@ jobs:
         uses: eliashaeussler/gha/.github/actions/checkout@24c8e1aa6eb95107a2f97721f962cc6372ae9016 # 0.8.1
 
       - name: 'Setup Python'
-        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
           python-version: 3
           cache: 'pip'

@@ -1,6 +1,6 @@
 services:
   bridge:
-    build: .
+    build: bridge
     networks:
       - default
 
@@ -17,7 +17,7 @@ services:
       - bridge
 
   grafana:
-    image: grafana/grafana-oss
+    build: grafana
     networks:
       - default
     ports:
@@ -26,9 +26,8 @@ services:
       - GF_AUTH_ANONYMOUS_ENABLED=true
       - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
       - GF_AUTH_DISABLE_LOGIN_FORM=true
-      - GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH=/var/lib/grafana/dashboards/train-data.json
+      - GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH=/etc/grafana/dashboards/train-data.json
     volumes:
-      - './grafana/dashboards:/var/lib/grafana/dashboards:ro'
       - './grafana/provisioning:/etc/grafana/provisioning:ro'
       - './data/grafana:/var/lib/grafana'
     depends_on:

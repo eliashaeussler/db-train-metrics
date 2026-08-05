@@ -51,13 +51,13 @@ jobs:
           cache: 'pip'
 
       - name: 'Install dependencies'
-        run: pip install -r requirements.txt -r requirements-dev.txt
+        run: pip install -r bridge/requirements.txt -r bridge/requirements-dev.txt
 
       - name: 'Lint Editorconfig'
         run: ec -verbose
 
       - name: 'Lint Python files'
-        run: pylint lib/*.py
+        run: pylint bridge/*.py
 
       - name: 'Lint shell files'
         run: bash -c 'shopt -s globstar nullglob; shellcheck *.sh'

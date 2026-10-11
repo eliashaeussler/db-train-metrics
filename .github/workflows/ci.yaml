@@ -14,7 +14,7 @@ permissions:
 jobs:
   prepare:
     name: 'Prepare workflow'
-    uses: eliashaeussler/gha/.github/workflows/preparation.yaml@18b13af6535654b3fcb96aa274caa278c48cc79c # 1.1.18
+    uses: eliashaeussler/gha/.github/workflows/preparation.yaml@3a73284f21eb185b08ccbb53226f7051328ed389 # 1.1.19
 
   checks:
     name: 'Checks'
@@ -26,7 +26,7 @@ jobs:
       contents: read
       security-events: write
 
-    uses: eliashaeussler/gha/.github/workflows/checks.yaml@18b13af6535654b3fcb96aa274caa278c48cc79c # 1.1.18
+    uses: eliashaeussler/gha/.github/workflows/checks.yaml@3a73284f21eb185b08ccbb53226f7051328ed389 # 1.1.19
     with:
       composer: false
 
@@ -42,7 +42,7 @@ jobs:
 
     steps:
       - name: 'Checkout'
-        uses: eliashaeussler/gha/.github/actions/checkout@18b13af6535654b3fcb96aa274caa278c48cc79c # 1.1.18
+        uses: eliashaeussler/gha/.github/actions/checkout@3a73284f21eb185b08ccbb53226f7051328ed389 # 1.1.19
 
       - name: 'Setup Python'
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
